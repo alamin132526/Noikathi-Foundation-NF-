@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>নৈকাঠী ফাউন্ডেশন</title>
+<style>
+body{font-family:Arial;margin:0;background:#f2fff5}
+header{background:#087a3d;color:white;text-align:center;padding:18px}
+nav{text-align:center;background:white;padding:10px}
+nav a{margin:4px;color:#087a3d;font-weight:bold}
+section{background:white;margin:12px;padding:15px;border-radius:10px}
+h2{color:#087a3d}
+input,textarea{width:90%;padding:8px;margin:4px}
+button{background:#087a3d;color:white;border:0;padding:8px 13px;border-radius:6px}
+table{width:100%;margin-top:10px;border-collapse:collapse}
+td,th{border:1px solid #ddd;padding:6px}
+</style>
+</head>
 
+<body>
+
+<header>
+<h1>🌿 নৈকাঠী ফাউন্ডেশন</h1>
+<p>মানবতার সেবায় একসাথে</p>
+</header>
+
+<nav>
+<a href="#member">সদস্য</a> |
+<a href="#income">মাসিক আয়</a> |
+<a href="#donation">দান</a> |
+<a href="#expense">ব্যয়</a> |
+<a href="#payment">টাকা দেওয়ার মাধ্যম</a> |
+<a href="#activity">কার্যক্রম</a>
+</nav>
+
+<section id="member">
+<h2>👥 সদস্য তালিকা</h2>
+<input id="m1" placeholder="নাম">
+<input id="m2" placeholder="মোবাইল">
+<input id="m3" placeholder="ব্লাড গ্রুপ">
+<input id="m4" placeholder="মাসিক ধার্য">
+<button onclick="add('member')">+ Add করুন</button>
+<div id="memberList"></div>
+</section>
+
+<section id="income">
+<h2>💰 মাসিক আয়</h2>
+<input id="i1" placeholder="নাম">
+<input id="i2" placeholder="তারিখ">
+<input id="i3" placeholder="টাকার পরিমাণ">
+<button onclick="add('income')">+ Add করুন</button>
+<div id="incomeList"></div>
+</section>
+
+<section id="donation">
+<h2>🎁 এককালীন দান</h2>
+<input id="d1" placeholder="দাতার নাম">
+<input id="d2" placeholder="তারিখ">
+<input id="d3" placeholder="টাকার পরিমাণ">
+<button onclick="add('donation')">+ Add করুন</button>
+<div id="donationList"></div>
+</section>
+
+<section id="expense">
+<h2>💸 ব্যয়</h2>
+<input id="e1" placeholder="খরচের বিবরণ">
+<input id="e2" placeholder="তারিখ">
+<input id="e3" placeholder="টাকার পরিমাণ">
+<button onclick="add('expense')">+ Add করুন</button>
+<div id="expenseList"></div>
+</section>
+
+<section id="payment">
+<h2>💳 টাকা দেওয়ার মাধ্যম</h2>
+
+<h3>📱 বিকাশ</h3>
+<input id="b1" placeholder="বিকাশ নম্বর / তথ্য">
+<button onclick="addPay('bKash')">+ Add করুন</button>
+<div id="bKashList"></div>
+
+<h3>📱 নগদ</h3>
+<input id="n1" placeholder="নগদ নম্বর / তথ্য">
+<button onclick="addPay('Nagad')">+ Add করুন</button>
+<div id="NagadList"></div>
+
+<h3>🏦 ব্যাংক</h3>
+<input id="bank1" placeholder="ব্যাংকের নাম">
+<input id="bank2" placeholder="অ্যাকাউন্ট নম্বর">
+<input id="bank3" placeholder="শাখার নাম">
+<button onclick="addPay('Bank')">+ Add করুন</button>
+<div id="BankList"></div>
+</section>
+
+<section id="activity">
+<h2>🤝 কার্যক্রম</h2>
+<input id="a1" placeholder="কার্যক্রমের নাম">
+<textarea id="a2" placeholder="বিস্তারিত"></textarea>
+<button onclick="add('activity')">+ Add করুন</button>
+<div id="activityList"></div>
+</section>
+
+<script>
+let data=JSON.parse(localStorage.getItem("naikathi")||'{"member":[],"income":[],"donation":[],"expense":[],"activity":[],"bKash":[],"Nagad":[],"Bank":[]}');
+
+function add(t){
+ let ids={member:["m1","m2","m3","m4"],income:["i1","i2","i3"],donation:["d1","d2","d3"],expense:["e1","e2","e3"],activity:["a1","a2"]}[t];
+ data[t].push(ids.map(x=>document.getElementById(x).value));
+ save();
+}
+
+function addPay(t){
+ let ids=t=="bKash"?["b1"]:t=="Nagad"?["n1"]:["bank1","bank2","bank3"];
+ data[t].push(ids.map(x=>document.getElementById(x).value));
+ save();
+}
+
+function save(){
+ localStorage.setItem("naikathi",JSON.stringify(data)); show();
+}
+
+function show(){
+ Object.keys(data).forEach(t=>{
+  let box=document.getElementById(t+"List"); if(!box)return;
+  box.innerHTML=data[t].map((r,i)=>"<p>"+r.join(" | ")+" <button onclick=\"del('"+t+"',"+i+")\">মুছুন</button></p>").join("");
+ });
+}
+function del(t,i){data[t].splice(i,1);save()}
+show();
+</script>
+
+</body>
+</html>
