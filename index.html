@@ -7,22 +7,102 @@
 <style>
 body{font-family:Arial;margin:0;background:#f2fff5}
 header{background:#087a3d;color:white;text-align:center;padding:15px}
+.logo{width:80px;height:80px;border-radius:50%;object-fit:cover}
 section{background:white;margin:10px;padding:12px;border-radius:10px}
 h2{color:#087a3d}input,textarea{width:90%;padding:7px;margin:3px}
-button{background:#087a3d;color:white;border:0;padding:7px;border-radius:5px}
+button{background:#087a3d;color:white;border:0;padding:7px;border-radius:5px;margin:3px}
 .item{border-bottom:1px solid #ddd;padding:7px}
+nav{text-align:center;padding:8px;background:white}
+nav a{color:#087a3d;margin:4px;text-decoration:none}
 </style>
 </head>
 <body>
 
-<header><h1>🌿 নৈকাঠী ফাউন্ডেশন</h1><p>মানবতার সেবায় একসাথে</p></header>
+<header>
+<img id="logo" class="logo" src="" style="display:none">
+<h1>🌿 নৈকাঠী ফাউন্ডেশন</h1>
+<p id="desc">মানবতার সেবায় একসাথে</p>
+<input id="newDesc" placeholder="আপনার Description লিখুন">
+<button onclick="setDesc()">Description পরিবর্তন</button>
+<br>
+<input type="file" accept="image/*" onchange="setLogo(this)">
+</header>
 
-<div id="app"></div>
+<nav>
+<a href="#member">সদস্য</a>
+<a href="#income">আয়</a>
+<a href="#donation">দান</a>
+<a href="#expense">ব্যয়</a>
+<a href="#payment">পেমেন্ট</a>
+<a href="#social">গ্রুপ</a>
+<a href="#activity">কার্যক্রম</a>
+</nav>
+
+<section id="member">
+<h2>👥 সদস্য তালিকা</h2>
+<input id="search" placeholder="সিরিয়াল নম্বর দিয়ে সার্চ">
+<button onclick="searchMember()">🔎 Search</button>
+<div id="result"></div>
+<hr>
+<input id="m0" placeholder="সিরিয়াল নম্বর">
+<input id="m1" placeholder="নাম">
+<input id="m2" placeholder="মোবাইল">
+<input id="m3" placeholder="ব্লাড গ্রুপ">
+<input id="m4" placeholder="মাসিক ধার্য">
+<button onclick="add('member',5)">+ Add করুন</button>
+<div id="memberL"></div>
+</section>
 
 <script>
 let D=JSON.parse(localStorage.getItem("NF")||"{}");
+
+function add(t,n){
+ D[t]=D[t]||[];
+ D[t].push([...Array(n)].map((_,i)=>document.getElementById(t+i).value));
+ save();show();
+}
+
+function save(){localStorage.setItem("NF",JSON.stringify(D))}
+function show(){
+ let x=D.member||[];
+ memberL.innerHTML=x.map((r,i)=>`<div class=item>
+ সিরিয়াল: ${r[0]} | ${r[1]} | ${r[2]} | ${r[3]} | ৳${r[4]}
+ <button onclick="del('member',${i})">মুছুন</button></div>`).join("");
+}
+function del(t,i){D[t].splice(i,1);save();show()}
+
+function searchMember(){
+ let s=search.value,r=(D.member||[]).find(x=>x[0]==s);
+ result.innerHTML=r?`<div class=item>
+<b>সিরিয়াল:</b> ${r[0]}<br>
+<b>নাম:</b> ${r[1]}<br>
+<b>মোবাইল:</b> ${r[2]}<br>
+<b>ব্লাড:</b> ${r[3]}<br>
+<b>মাসিক:</b> ৳${r[4]}</div>`:"কোনো সদস্য পাওয়া যায়নি";
+}
+
+function setDesc(){
+ desc.innerText=newDesc.value||"মানবতার সেবায় একসাথে";
+ localStorage.setItem("desc",desc.innerText);
+}
+
+function setLogo(x){
+ let r=new FileReader();
+ r.onload=()=>{logo.src=r.result;logo.style.display="inline-block";
+ localStorage.setItem("logo",r.result)};
+ r.readAsDataURL(x.files[0]);
+}
+
+desc.innerText=localStorage.getItem("desc")||"মানবতার সেবায় একসাথে";
+let L=localStorage.getItem("logo");
+if(L){logo.src=L;logo.style.display="inline-block"}
+show();
+</script>
+
+<div id="other"></div>
+
+<script>
 let S=[
-["member","👥 সদস্য","নাম,মোবাইল,ব্লাড গ্রুপ,মাসিক ধার্য"],
 ["income","💰 মাসিক আয়","নাম,তারিখ,টাকার পরিমাণ"],
 ["donation","🎁 এককালীন দান","দাতার নাম,তারিখ,টাকার পরিমাণ"],
 ["expense","💸 ব্যয়","বিবরণ,তারিখ,টাকার পরিমাণ"],
@@ -34,29 +114,29 @@ let S=[
 ["activity","🤝 কার্যক্রম","কার্যক্রমের নাম,বিস্তারিত"]
 ];
 
-let A=document.getElementById("app");
 S.forEach(x=>{
- let [id,title,fields]=x;
- A.innerHTML+=`<section><h2>${title}</h2>
- ${fields.split(",").map((f,i)=>`<input id="${id}${i}" placeholder="${f}">`).join("")}
- <button onclick="add('${id}',${fields.split(",").length})">+ Add করুন</button>
- <div id="${id}L"></div></section>`;
+let[id,t,f]=x;
+other.innerHTML+=`<section id="${id}"><h2>${t}</h2>
+${f.split(",").map((a,i)=>`<input id="${id}${i}" placeholder="${a}">`).join("")}
+<button onclick="add2('${id}',${f.split(",").length})">+ Add করুন</button>
+<div id="${id}L"></div></section>`;
 });
 
-function add(t,n){
- D[t]=D[t]||[];
- D[t].push([...Array(n)].map((_,i)=>document.getElementById(t+i).value));
- localStorage.setItem("NF",JSON.stringify(D));show();
+function add2(t,n){
+D[t]=D[t]||[];
+D[t].push([...Array(n)].map((_,i)=>document.getElementById(t+i).value));
+save();show2();
 }
-function show(){
- S.forEach(x=>{
-  let [id]=x,L=document.getElementById(id+"L");
-  L.innerHTML=(D[id]||[]).map((r,i)=>
-  `<div class="item">${r.join(" | ")} <button onclick="del('${id}',${i})">মুছুন</button></div>`).join("");
- });
+function show2(){
+S.forEach(x=>{
+let[id]=x,L=document.getElementById(id+"L");
+if(L)L.innerHTML=(D[id]||[]).map((r,i)=>
+`<div class=item>${r.join(" | ")}
+<button onclick="del2('${id}',${i})">মুছুন</button></div>`).join("");
+});
 }
-function del(t,i){D[t].splice(i,1);localStorage.setItem("NF",JSON.stringify(D));show()}
-show();
+function del2(t,i){D[t].splice(i,1);save();show2()}
+show2();
 </script>
 
 </body>
