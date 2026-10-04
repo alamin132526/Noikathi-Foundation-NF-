@@ -49,7 +49,7 @@ nav a{color:#087a3d;margin:4px;text-decoration:none}
 <input id="m2" placeholder="মোবাইল">
 <input id="m3" placeholder="ব্লাড গ্রুপ">
 <input id="m4" placeholder="মাসিক ধার্য">
-<button onclick="add('member',5)">+ Add করুন</button>
+<button onclick="addMember()">+ Add করুন</button>
 <div id="memberL"></div>
 </section>
 
@@ -57,9 +57,12 @@ nav a{color:#087a3d;margin:4px;text-decoration:none}
 let D=JSON.parse(localStorage.getItem("NF")||"{}");
 
 function add(t,n){
- D[t]=D[t]||[];
- D[t].push([...Array(n)].map((_,i)=>document.getElementById(t+i).value));
- save();show();
+function addMember(){
+let r=["m0","m1","m2","m3","m4"].map(x=>document.getElementById(x).value);
+if(!r[0]||!r[1]){alert("সিরিয়াল ও নাম দিন");return}
+D.member=D.member||[];
+D.member.push(r);
+save();show();
 }
 
 function save(){localStorage.setItem("NF",JSON.stringify(D))}
