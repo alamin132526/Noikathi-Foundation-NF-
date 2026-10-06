@@ -4,448 +4,226 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>নৈকাঠী ফাউন্ডেশন</title>
-
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f2faf4;font-family:Arial;color:#222}
-header{background:#087a3d;color:#fff;text-align:center;padding:18px}
-header h1{margin:5px}
-header p{margin:5px}
-.logo{width:75px;height:75px;border-radius:50%;object-fit:cover;background:#fff}
-nav{display:flex;overflow:auto;gap:5px;padding:8px;background:#fff;position:sticky;top:0;z-index:5}
-nav button{white-space:nowrap}
-section{background:#fff;margin:10px;padding:15px;border-radius:12px;box-shadow:0 2px 7px #ccc}
-h2{color:#087a3d}
-input,textarea,select{width:100%;padding:10px;margin:4px 0;border:1px solid #ccc;border-radius:7px}
-button{border:0;padding:9px 13px;border-radius:7px;background:#087a3d;color:white;margin:3px}
-.red{background:#d62828}
-.blue{background:#1769aa}
-.item{padding:10px 2px;border-bottom:1px solid #ddd;line-height:1.7}
-.admin{display:none}
-#login{max-width:400px;margin:20px auto}
-table{width:100%;border-collapse:collapse}
-th,td{padding:7px;border:1px solid #ddd}
-th{background:#087a3d;color:#fff}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f4;color:#222}
+header{background:#087a3d;color:white;text-align:center;padding:20px}
+nav{display:flex;overflow:auto;background:white;position:sticky;top:0}
+nav button{border:0;background:white;padding:12px;white-space:nowrap}
+section{padding:15px;display:none}
+section.active{display:block}
+.add{background:#087a3d;color:white;border:0;padding:10px 15px;border-radius:6px}
+.card{background:white;margin:10px 0;padding:12px;border-radius:8px;box-shadow:0 1px 5px #ccc}
+input,textarea,select{width:100%;box-sizing:border-box;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
+.action{margin-top:8px}
+.edit{background:#e6a700;color:white;border:0;padding:6px}
+.del{background:#d33;color:white;border:0;padding:6px}
 </style>
 </head>
 
 <body>
 
 <header>
-<img id="logo" class="logo" style="display:none">
-<h1 id="title">🌿 নৈকাঠী ফাউন্ডেশন</h1>
-<p id="desc">মানবতার সেবায় একসাথে</p>
-
-<button id="loginBtn" onclick="loginBox()">🔐 Admin Login</button>
-<button id="logoutBtn" class="admin" onclick="logout()">Logout</button>
+<h2>🌿 নৈকাঠী ফাউন্ডেশন</h2>
+<p>মানবতার সেবায় একসাথে</p>
 </header>
 
-<div id="login" style="display:none">
-<section>
-<h2>🔐 Admin Login</h2>
-<input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<button class="red" onclick="closeLogin()">বন্ধ</button>
-<p id="msg"></p>
-</section>
-</div>
-
 <nav>
-<button onclick="go('members')">👥 সদস্য</button>
-<button onclick="go('income')">💰 আয়</button>
-<button onclick="go('donation')">🎁 দান</button>
-<button onclick="go('expense')">💸 ব্যয়</button>
-<button onclick="go('payment')">💳 টাকা দেওয়ার মাধ্যম</button>
-<button onclick="go('social')">🔗 Link</button>
-<button onclick="go('activity')">🤝 কার্যক্রম</button>
-<button onclick="go('settings')">⚙️ সেটিংস</button>
+<button onclick="show('home')">হোম</button>
+<button onclick="show('member')">সদস্য</button>
+<button onclick="show('income')">মাসিক আয়</button>
+<button onclick="show('donation')">এককালীন দান</button>
+<button onclick="show('expense')">ব্যয়</button>
+<button onclick="show('payment')">টাকা দেওয়ার মাধ্যম</button>
+<button onclick="show('activity')">কার্যক্রম</button>
+<button onclick="show('document')">ডকুমেন্ট</button>
+<button onclick="show('social')">Facebook/Messenger</button>
+<button onclick="show('note')">লেখা</button>
 </nav>
 
-<!-- সদস্য -->
-<section id="members">
-<h2>👥 সদস্য তালিকা</h2>
-
-<input id="search" placeholder="সিরিয়াল নম্বর দিয়ে Search করুন"
-oninput="searchMember()">
-
-<div id="searchResult"></div>
-
-<div class="admin">
-<input id="m0" placeholder="সিরিয়াল নম্বর">
-<input id="m1" placeholder="নাম">
-<input id="m2" placeholder="মোবাইল নাম্বার">
-<input id="m3" placeholder="ব্লাড গ্রুপ">
-<input id="m4" type="number" placeholder="মাসিক ধার্য">
-<button onclick="addMember()">➕ Add করুন</button>
+<section id="home" class="active">
+<h3>🏠 স্বাগতম</h3>
+<p>নৈকাঠী ফাউন্ডেশন একটি মানবিক ও সামাজিক উদ্যোগ।</p>
+<div class="card">
+<h3>📊 হিসাবের সারাংশ</h3>
+<p>মাসিক আয়: ৳ <b id="totalIncome">0</b></p>
+<p>এককালীন দান: ৳ <b id="totalDonation">0</b></p>
+<p>মোট ব্যয়: ৳ <b id="totalExpense">0</b></p>
 </div>
-
-<div id="memberList"></div>
 </section>
 
-<!-- আয় -->
+<section id="member">
+<h3>👥 সদস্য তালিকা</h3>
+<button class="add" onclick="addMember()">➕ Add করুন</button>
+<div id="members"></div>
+</section>
+
 <section id="income">
-<h2>💰 মাসিক আয়</h2>
-
-<div class="admin">
-<input id="in0" placeholder="নাম">
-<input id="in1" type="date">
-<input id="in2" type="number" placeholder="টাকার পরিমাণ">
-<button onclick="add('income')">➕ Add করুন</button>
-</div>
-
-<div id="incomeList"></div>
+<h3>💰 মাসিক আয়</h3>
+<button class="add" onclick="addIncome()">➕ Add করুন</button>
+<div id="incomes"></div>
 </section>
 
-<!-- দান -->
 <section id="donation">
-<h2>🎁 এককালীন দান</h2>
-
-<div class="admin">
-<input id="dn0" placeholder="দাতার নাম">
-<input id="dn1" type="date">
-<input id="dn2" type="number" placeholder="টাকার পরিমাণ">
-<button onclick="add('donation')">➕ Add করুন</button>
-</div>
-
-<div id="donationList"></div>
+<h3>🎁 এককালীন দান</h3>
+<button class="add" onclick="addDonation()">➕ Add করুন</button>
+<div id="donations"></div>
 </section>
 
-<!-- ব্যয় -->
 <section id="expense">
-<h2>💸 ব্যয়</h2>
-
-<div class="admin">
-<input id="ex0" placeholder="ব্যয়ের বিবরণ">
-<input id="ex1" type="date">
-<input id="ex2" type="number" placeholder="টাকার পরিমাণ">
-<button onclick="add('expense')">➕ Add করুন</button>
-</div>
-
-<div id="expenseList"></div>
+<h3>💸 ব্যয়</h3>
+<button class="add" onclick="addExpense()">➕ Add করুন</button>
+<div id="expenses"></div>
 </section>
 
-<!-- টাকা দেওয়ার মাধ্যম -->
 <section id="payment">
-<h2>💳 টাকা দেওয়ার মাধ্যম</h2>
-
-<div class="admin">
-<select id="py0">
-<option>বিকাশ</option>
-<option>নগদ</option>
-<option>ব্যাংক</option>
-</select>
-<input id="py1" placeholder="নাম / ব্যাংকের নাম">
-<input id="py2" placeholder="নম্বর / অ্যাকাউন্ট নম্বর">
-<input id="py3" placeholder="শাখা">
-<button onclick="add('payment')">➕ Add করুন</button>
-</div>
-
-<div id="paymentList"></div>
+<h3>💳 টাকা দেওয়ার মাধ্যম</h3>
+<button class="add" onclick="addPayment()">➕ Add করুন</button>
+<div id="payments"></div>
 </section>
 
-<!-- Facebook Messenger -->
-<section id="social">
-<h2>🔗 Facebook & Messenger</h2>
-
-<div class="admin">
-<select id="so0">
-<option>Facebook Group</option>
-<option>Messenger Group</option>
-</select>
-<input id="so1" placeholder="Link">
-<button onclick="add('social')">➕ Add করুন</button>
-</div>
-
-<div id="socialList"></div>
-</section>
-
-<!-- কার্যক্রম -->
 <section id="activity">
-<h2>🤝 কার্যক্রম</h2>
-
-<div class="admin">
-<input id="ac0" placeholder="কার্যক্রমের নাম">
-<textarea id="ac1" placeholder="কার্যক্রমের বিস্তারিত"></textarea>
-<button onclick="add('activity')">➕ Add করুন</button>
-</div>
-
-<div id="activityList"></div>
+<h3>🤝 কার্যক্রম</h3>
+<button class="add" onclick="addActivity()">➕ Add করুন</button>
+<div id="activities"></div>
 </section>
 
-<!-- সেটিংস -->
-<section id="settings">
-<h2>⚙️ ফাউন্ডেশন সেটিংস</h2>
+<section id="document">
+<h3>📄 ডকুমেন্ট</h3>
+<button class="add" onclick="addDocument()">➕ Add করুন</button>
+<div id="documents"></div>
+</section>
 
-<div class="admin">
-<input id="st0" placeholder="ফাউন্ডেশনের নাম">
-<textarea id="st1" placeholder="ফাউন্ডেশনের বর্ণনা"></textarea>
-<input id="st2" placeholder="Logo-এর ছবি URL">
-<button onclick="saveSettings()">💾 Save করুন</button>
-</div>
+<section id="social">
+<h3>📱 Facebook / Messenger</h3>
+<button class="add" onclick="addSocial()">➕ Add করুন</button>
+<div id="socials"></div>
+</section>
 
-<p>নাম, বর্ণনা ও Logo পরিবর্তন করার ব্যবস্থা এখানে থাকবে।</p>
+<section id="note">
+<h3>📝 লেখা</h3>
+<button class="add" onclick="addNote()">➕ Add করুন</button>
+<div id="notes"></div>
 </section>
 
 <script>
+const key="naikathiFoundation";
+let data=JSON.parse(localStorage.getItem(key)||'{"member":[],"income":[],"donation":[],"expense":[],"payment":[],"activity":[],"document":[],"social":[],"note":[]}');
 
-let admin=false;
-
-/* ৩ জন Admin */
-const admins=[
- {email:"admin1@gmail.com",pass:"123456"},
- {email:"admin2@gmail.com",pass:"123456"},
- {email:"admin3@gmail.com",pass:"123456"}
-];
-
-/* ডাটা */
-let D=JSON.parse(localStorage.getItem("NAIKATHI_DATA")||"{}");
-
-function save(){
- localStorage.setItem("NAIKATHI_DATA",JSON.stringify(D));
- show();
+function save(){localStorage.setItem(key,JSON.stringify(data));render()}
+function show(id){
+ document.querySelectorAll("section").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
 }
 
-function go(id){
- document.getElementById(id).scrollIntoView({behavior:"smooth"});
-}
-
-/* Login */
-function loginBox(){
- document.getElementById("login").style.display="block";
-}
-
-function closeLogin(){
- document.getElementById("login").style.display="none";
-}
-
-function login(){
-
- let e=document.getElementById("email").value;
- let p=document.getElementById("pass").value;
-
- let ok=admins.some(x=>x.email==e&&x.pass==p);
-
- if(ok){
-  admin=true;
-  document.querySelectorAll(".admin").forEach(x=>x.style.display="block");
-  document.getElementById("loginBtn").style.display="none";
-  document.getElementById("logoutBtn").style.display="inline-block";
-  document.getElementById("login").style.display="none";
-  show();
- }else{
-  document.getElementById("msg").innerText="Email অথবা Password ভুল";
+function ask(title,fields){
+ let o={};
+ for(let f of fields){
+  let v=prompt(f[0],f[1]||"");
+  if(v===null)return null;
+  o[f[1]]=v;
  }
+ o.id=Date.now();
+ return o;
 }
 
-function logout(){
- admin=false;
- document.querySelectorAll(".admin").forEach(x=>x.style.display="none");
- document.getElementById("loginBtn").style.display="inline-block";
- document.getElementById("logoutBtn").style.display="none";
- show();
-}
-
-/* সদস্য Add */
 function addMember(){
+ let o=ask("সদস্য",[
+ ["নাম","name"],["মোবাইল","mobile"],["ব্লাড গ্রুপ","blood"],["মাসিক ধার্য","amount"]]);
+ if(o){data.member.push(o);save()}
+}
+function addIncome(){
+ let o=ask("মাসিক আয়",[
+ ["নাম","name"],["তারিখ","date"],["মাস","month"],["টাকার পরিমাণ","amount"]]);
+ if(o){data.income.push(o);save()}
+}
+function addDonation(){
+ let o=ask("এককালীন দান",[
+ ["দাতার নাম","name"],["তারিখ","date"],["মাস","month"],["টাকার পরিমাণ","amount"]]);
+ if(o){data.donation.push(o);save()}
+}
+function addExpense(){
+ let o=ask("ব্যয়",[
+ ["খরচের বিবরণ","name"],["তারিখ","date"],["টাকার পরিমাণ","amount"]]);
+ if(o){data.expense.push(o);save()}
+}
+function addPayment(){
+ let o=ask("টাকা দেওয়ার মাধ্যম",[
+ ["মাধ্যমের নাম (বিকাশ/নগদ/ব্যাংক)","name"],["নম্বর/অ্যাকাউন্ট","number"],["অতিরিক্ত তথ্য","info"]]);
+ if(o){data.payment.push(o);save()}
+}
+function addActivity(){
+ let o=ask("কার্যক্রম",[
+ ["কার্যক্রমের নাম","name"],["তারিখ","date"],["বিবরণ","info"]]);
+ if(o){data.activity.push(o);save()}
+}
+function addDocument(){
+ let o=ask("ডকুমেন্ট",[
+ ["ডকুমেন্টের নাম","name"],["লিংক","link"]]);
+ if(o){data.document.push(o);save()}
+}
+function addSocial(){
+ let o=ask("সোশ্যাল লিংক",[
+ ["নাম (Facebook/Messenger)","name"],["লিংক","link"]]);
+ if(o){data.social.push(o);save()}
+}
+function addNote(){
+ let o=ask("লেখা",[
+ ["শিরোনাম","name"],["বিস্তারিত লেখা","info"]]);
+ if(o){data.note.push(o);save()}
+}
 
- if(!admin)return alert("শুধু Admin Add করতে পারবেন");
-
- let r=[
-  m0.value,m1.value,m2.value,m3.value,m4.value
- ];
-
- if(!r[0]||!r[1])
- return alert("সিরিয়াল ও নাম দিন");
-
- D.members=D.members||[];
- D.members.push(r);
-
- m0.value=m1.value=m2.value=m3.value=m4.value="";
-
+function edit(type,id){
+ let o=data[type].find(x=>x.id==id);
+ if(!o)return;
+ for(let k in o){
+  if(k!="id"){
+   let v=prompt(k,o[k]);
+   if(v!==null)o[k]=v;
+  }
+ }
  save();
 }
 
-/* অন্যান্য Add */
-function add(type){
+function del(type,id){
+ if(confirm("এই তথ্যটি মুছে ফেলবেন?")){
+  data[type]=data[type].filter(x=>x.id!=id);
+  save();
+ }
+}
 
- if(!admin)return alert("শুধু Admin Add করতে পারবেন");
-
- let ids={
- income:["in0","in1","in2"],
- donation:["dn0","dn1","dn2"],
- expense:["ex0","ex1","ex2"],
- payment:["py0","py1","py2","py3"],
- social:["so0","so1"],
- activity:["ac0","ac1"]
+function render(){
+ let map={
+ member:"members",income:"incomes",donation:"donations",
+ expense:"expenses",payment:"payments",activity:"activities",
+ document:"documents",social:"socials",note:"notes"
  };
-
- D[type]=D[type]||[];
-
- D[type].push(
-  ids[type].map(id=>document.getElementById(id).value)
- );
-
- ids[type].forEach(id=>document.getElementById(id).value="");
-
- save();
-}
-
-/* Delete */
-function del(type,i){
-
- if(!admin)return alert("শুধু Admin Delete করতে পারবেন");
-
- D[type].splice(i,1);
- save();
-}
-
-/* Edit সদস্য */
-function editMember(i){
-
- if(!admin)return;
-
- let r=D.members[i];
-
- m0.value=r[0];
- m1.value=r[1];
- m2.value=r[2];
- m3.value=r[3];
- m4.value=r[4];
-
- D.members.splice(i,1);
- save();
-
- go("members");
-}
-
-/* সব দেখানো */
-function show(){
-
- showMembers();
-
- showList("income");
- showList("donation");
- showList("expense");
- showList("payment");
- showList("social");
- showList("activity");
-
- loadSettings();
-}
-
-/* সদস্য দেখানো */
-function showMembers(){
-
- let a=D.members||[];
- let h="";
-
- a.forEach((r,i)=>{
-
- h+=`
- <div class="item">
- <b>${r[0]}. ${r[1]}</b><br>
- 📞 ${r[2]}<br>
- 🩸 ${r[3]}<br>
- 💰 মাসিক ধার্য: ${r[4]} টাকা
-
- ${admin?`
- <br>
- <button onclick="editMember(${i})">✏️ Edit</button>
- <button class="red" onclick="del('members',${i})">🗑️ Delete</button>
- `:""}
- </div>`;
- });
-
- document.getElementById("memberList").innerHTML=
- h||"এখনো কোনো সদস্য যোগ করা হয়নি।";
-}
-
-/* অন্যান্য তালিকা */
-function showList(type){
-
- let a=D[type]||[];
- let h="";
-
- a.forEach((r,i)=>{
-
- let text=r.join(" | ");
-
- if(type=="social"){
-  text=`<b>${r[0]}</b><br>
-  <a href="${r[1]}" target="_blank">🔗 Link খুলুন</a>`;
+ for(let type in map){
+  let box=document.getElementById(map[type]);
+  box.innerHTML="";
+  data[type].forEach(o=>{
+   let text="";
+   for(let k in o)if(k!="id")text+=`<p><b>${k}:</b> ${o[k]}</p>`;
+   box.innerHTML+=`
+   <div class="card">
+   ${text}
+   <div class="action">
+   <button class="edit" onclick="edit('${type}',${o.id})">✏️ Edit</button>
+   <button class="del" onclick="del('${type}',${o.id})">🗑️ Delete</button>
+   </div></div>`;
+  });
  }
 
- h+=`
- <div class="item">
- ${text}
- ${admin?
- `<br><button class="red"
- onclick="del('${type}',${i})">🗑️ Delete</button>`:""}
- </div>`;
- });
+ document.getElementById("totalIncome").innerText=
+ data.income.reduce((s,x)=>s+(Number(x.amount)||0),0);
 
- document.getElementById(type+"List").innerHTML=
- h||"এখনো কোনো তথ্য যোগ করা হয়নি।";
+ document.getElementById("totalDonation").innerText=
+ data.donation.reduce((s,x)=>s+(Number(x.amount)||0),0);
+
+ document.getElementById("totalExpense").innerText=
+ data.expense.reduce((s,x)=>s+(Number(x.amount)||0),0);
 }
 
-/* সদস্য Search */
-function searchMember(){
-
- let s=document.getElementById("search").value;
- let a=D.members||[];
-
- if(!s){
-  document.getElementById("searchResult").innerHTML="";
-  return;
- }
-
- let r=a.find(x=>String(x[0])==String(s));
-
- document.getElementById("searchResult").innerHTML=
- r?
- `<section>
- <b>👤 ${r[1]}</b><br>
- 📞 ${r[2]}<br>
- 🩸 ${r[3]}<br>
- 💰 ${r[4]} টাকা
- </section>`
- :"❌ সদস্য পাওয়া যায়নি";
-}
-
-/* Settings */
-function saveSettings(){
-
- if(!admin)return alert("শুধু Admin পরিবর্তন করতে পারবেন");
-
- let s={
-  name:st0.value,
-  desc:st1.value,
-  logo:st2.value
- };
-
- D.settings=s;
- save();
- alert("সফলভাবে Save হয়েছে");
-}
-
-function loadSettings(){
-
- let s=D.settings;
- if(!s)return;
-
- if(s.name)document.getElementById("title").innerText=s.name;
- if(s.desc)document.getElementById("desc").innerText=s.desc;
-
- if(s.logo){
-  let l=document.getElementById("logo");
-  l.src=s.logo;
-  l.style.display="block";
- }
-}
-
-show();
-
+render();
 </script>
 
 </body>
