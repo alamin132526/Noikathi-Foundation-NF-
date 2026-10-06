@@ -5,18 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>নৈকাঠী ফাউন্ডেশন</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f2f7f4;color:#222}
-header{background:#087a3d;color:white;text-align:center;padding:20px}
-nav{display:flex;overflow:auto;background:white;position:sticky;top:0}
-nav button{border:0;background:white;padding:12px;white-space:nowrap}
-section{padding:15px;display:none}
-section.active{display:block}
-.add{background:#087a3d;color:white;border:0;padding:10px 15px;border-radius:6px}
-.card{background:white;margin:10px 0;padding:12px;border-radius:8px;box-shadow:0 1px 5px #ccc}
-input,textarea,select{width:100%;box-sizing:border-box;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
-.action{margin-top:8px}
-.edit{background:#e6a700;color:white;border:0;padding:6px}
-.del{background:#d33;color:white;border:0;padding:6px}
+body{margin:0;font-family:Arial;background:#f2f7f3}
+header{background:#087a3d;color:white;text-align:center;padding:15px}
+nav{display:flex;overflow:auto;background:white}
+nav button{border:0;background:white;padding:11px;white-space:nowrap}
+section{display:none;padding:15px}
+section:first-of-type{display:block}
+button.add{background:#087a3d;color:white;border:0;padding:10px 15px;border-radius:6px}
+.card{background:white;padding:12px;margin:10px 0;border-radius:7px}
+table{width:100%;border-collapse:collapse;background:white}
+td,th{border:1px solid #ddd;padding:7px;text-align:center}
+th{background:#087a3d;color:white}
 </style>
 </head>
 
@@ -28,202 +27,128 @@ input,textarea,select{width:100%;box-sizing:border-box;padding:10px;margin:5px 0
 </header>
 
 <nav>
-<button onclick="show('home')">হোম</button>
-<button onclick="show('member')">সদস্য</button>
-<button onclick="show('income')">মাসিক আয়</button>
-<button onclick="show('donation')">এককালীন দান</button>
-<button onclick="show('expense')">ব্যয়</button>
-<button onclick="show('payment')">টাকা দেওয়ার মাধ্যম</button>
-<button onclick="show('activity')">কার্যক্রম</button>
-<button onclick="show('document')">ডকুমেন্ট</button>
-<button onclick="show('social')">Facebook/Messenger</button>
-<button onclick="show('note')">লেখা</button>
+<button onclick="go('home')">🏠 হোম</button>
+<button onclick="go('member')">👥 সদস্য</button>
+<button onclick="go('income')">💰 মাসিক আয়</button>
+<button onclick="go('donation')">🎁 দান</button>
+<button onclick="go('expense')">💸 ব্যয়</button>
+<button onclick="go('payment')">💳 টাকা দেওয়ার মাধ্যম</button>
+<button onclick="go('activity')">🤝 কার্যক্রম</button>
+<button onclick="go('document')">📄 ডকুমেন্ট</button>
+<button onclick="go('social')">📱 Facebook/Messenger</button>
+<button onclick="go('note')">📝 লেখা</button>
 </nav>
 
-<section id="home" class="active">
-<h3>🏠 স্বাগতম</h3>
-<p>নৈকাঠী ফাউন্ডেশন একটি মানবিক ও সামাজিক উদ্যোগ।</p>
+<section id="home">
+<h3>🏠 নৈকাঠী ফাউন্ডেশন</h3>
 <div class="card">
-<h3>📊 হিসাবের সারাংশ</h3>
-<p>মাসিক আয়: ৳ <b id="totalIncome">0</b></p>
-<p>এককালীন দান: ৳ <b id="totalDonation">0</b></p>
-<p>মোট ব্যয়: ৳ <b id="totalExpense">0</b></p>
+মাসিক আয়: ৳<b id="ti">0</b><br><br>
+দান: ৳<b id="td">0</b><br><br>
+ব্যয়: ৳<b id="te">0</b>
 </div>
 </section>
 
-<section id="member">
-<h3>👥 সদস্য তালিকা</h3>
-<button class="add" onclick="addMember()">➕ Add করুন</button>
-<div id="members"></div>
-</section>
+<section id="member"><h3>👥 সদস্য</h3>
+<button class="add" onclick="add('member')">➕ Add করুন</button>
+<div id="memberList"></div></section>
 
-<section id="income">
-<h3>💰 মাসিক আয়</h3>
-<button class="add" onclick="addIncome()">➕ Add করুন</button>
-<div id="incomes"></div>
-</section>
+<section id="income"><h3>💰 মাসিক আয়</h3>
+<select id="month" onchange="incomeShow()">
+<option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option>মার্চ</option>
+<option>এপ্রিল</option><option>মে</option><option>জুন</option>
+<option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
+<option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
+</select>
+<button class="add" onclick="add('income')">➕ Add করুন</button>
+<div class="card">এখন পর্যন্ত: ৳<b id="mt">0</b></div>
+<table><thead><tr><th>নাম</th><th>তারিখ</th><th>মাস</th><th>টাকা</th></tr></thead>
+<tbody id="incomeList"></tbody></table></section>
 
-<section id="donation">
-<h3>🎁 এককালীন দান</h3>
-<button class="add" onclick="addDonation()">➕ Add করুন</button>
-<div id="donations"></div>
-</section>
+<section id="donation"><h3>🎁 এককালীন দান</h3>
+<button class="add" onclick="add('donation')">➕ Add করুন</button>
+<div id="donationList"></div></section>
 
-<section id="expense">
-<h3>💸 ব্যয়</h3>
-<button class="add" onclick="addExpense()">➕ Add করুন</button>
-<div id="expenses"></div>
-</section>
+<section id="expense"><h3>💸 ব্যয়</h3>
+<button class="add" onclick="add('expense')">➕ Add করুন</button>
+<div id="expenseList"></div></section>
 
-<section id="payment">
-<h3>💳 টাকা দেওয়ার মাধ্যম</h3>
-<button class="add" onclick="addPayment()">➕ Add করুন</button>
-<div id="payments"></div>
-</section>
+<section id="payment"><h3>💳 টাকা দেওয়ার মাধ্যম</h3>
+<button class="add" onclick="add('payment')">➕ Add করুন</button>
+<div id="paymentList"></div></section>
 
-<section id="activity">
-<h3>🤝 কার্যক্রম</h3>
-<button class="add" onclick="addActivity()">➕ Add করুন</button>
-<div id="activities"></div>
-</section>
+<section id="activity"><h3>🤝 কার্যক্রম</h3>
+<button class="add" onclick="add('activity')">➕ Add করুন</button>
+<div id="activityList"></div></section>
 
-<section id="document">
-<h3>📄 ডকুমেন্ট</h3>
-<button class="add" onclick="addDocument()">➕ Add করুন</button>
-<div id="documents"></div>
-</section>
+<section id="document"><h3>📄 ডকুমেন্ট</h3>
+<button class="add" onclick="add('document')">➕ Add করুন</button>
+<div id="documentList"></div></section>
 
-<section id="social">
-<h3>📱 Facebook / Messenger</h3>
-<button class="add" onclick="addSocial()">➕ Add করুন</button>
-<div id="socials"></div>
-</section>
+<section id="social"><h3>📱 Facebook / Messenger</h3>
+<button class="add" onclick="add('social')">➕ Add করুন</button>
+<div id="socialList"></div></section>
 
-<section id="note">
-<h3>📝 লেখা</h3>
-<button class="add" onclick="addNote()">➕ Add করুন</button>
-<div id="notes"></div>
-</section>
+<section id="note"><h3>📝 লেখা</h3>
+<button class="add" onclick="add('note')">➕ Add করুন</button>
+<div id="noteList"></div></section>
 
 <script>
-const key="naikathiFoundation";
-let data=JSON.parse(localStorage.getItem(key)||'{"member":[],"income":[],"donation":[],"expense":[],"payment":[],"activity":[],"document":[],"social":[],"note":[]}');
+let d=JSON.parse(localStorage.getItem("nf")||'{"member":[],"income":[],"donation":[],"expense":[],"payment":[],"activity":[],"document":[],"social":[],"note":[]}');
 
-function save(){localStorage.setItem(key,JSON.stringify(data));render()}
-function show(id){
- document.querySelectorAll("section").forEach(x=>x.classList.remove("active"));
- document.getElementById(id).classList.add("active");
-}
+let fields={
+member:["নাম","মোবাইল","ব্লাড গ্রুপ","মাসিক ধার্য"],
+income:["নাম","তারিখ","কোন মাসের","টাকা"],
+donation:["দাতার নাম","তারিখ","টাকা"],
+expense:["খরচের নাম","তারিখ","টাকা"],
+payment:["মাধ্যমের নাম","নম্বর/অ্যাকাউন্ট"],
+activity:["কার্যক্রমের নাম","তারিখ","বিবরণ"],
+document:["ডকুমেন্টের নাম","লিংক"],
+social:["Facebook/Messenger নাম","লিংক"],
+note:["শিরোনাম","লেখা"]
+};
 
-function ask(title,fields){
- let o={};
- for(let f of fields){
-  let v=prompt(f[0],f[1]||"");
-  if(v===null)return null;
-  o[f[1]]=v;
- }
- o.id=Date.now();
- return o;
-}
+function save(){localStorage.setItem("nf",JSON.stringify(d));showAll()}
 
-function addMember(){
- let o=ask("সদস্য",[
- ["নাম","name"],["মোবাইল","mobile"],["ব্লাড গ্রুপ","blood"],["মাসিক ধার্য","amount"]]);
- if(o){data.member.push(o);save()}
-}
-function addIncome(){
- let o=ask("মাসিক আয়",[
- ["নাম","name"],["তারিখ","date"],["মাস","month"],["টাকার পরিমাণ","amount"]]);
- if(o){data.income.push(o);save()}
-}
-function addDonation(){
- let o=ask("এককালীন দান",[
- ["দাতার নাম","name"],["তারিখ","date"],["মাস","month"],["টাকার পরিমাণ","amount"]]);
- if(o){data.donation.push(o);save()}
-}
-function addExpense(){
- let o=ask("ব্যয়",[
- ["খরচের বিবরণ","name"],["তারিখ","date"],["টাকার পরিমাণ","amount"]]);
- if(o){data.expense.push(o);save()}
-}
-function addPayment(){
- let o=ask("টাকা দেওয়ার মাধ্যম",[
- ["মাধ্যমের নাম (বিকাশ/নগদ/ব্যাংক)","name"],["নম্বর/অ্যাকাউন্ট","number"],["অতিরিক্ত তথ্য","info"]]);
- if(o){data.payment.push(o);save()}
-}
-function addActivity(){
- let o=ask("কার্যক্রম",[
- ["কার্যক্রমের নাম","name"],["তারিখ","date"],["বিবরণ","info"]]);
- if(o){data.activity.push(o);save()}
-}
-function addDocument(){
- let o=ask("ডকুমেন্ট",[
- ["ডকুমেন্টের নাম","name"],["লিংক","link"]]);
- if(o){data.document.push(o);save()}
-}
-function addSocial(){
- let o=ask("সোশ্যাল লিংক",[
- ["নাম (Facebook/Messenger)","name"],["লিংক","link"]]);
- if(o){data.social.push(o);save()}
-}
-function addNote(){
- let o=ask("লেখা",[
- ["শিরোনাম","name"],["বিস্তারিত লেখা","info"]]);
- if(o){data.note.push(o);save()}
+function go(x){
+document.querySelectorAll("section").forEach(s=>s.style.display="none");
+document.getElementById(x).style.display="block";
+if(x=="income")incomeShow();
 }
 
-function edit(type,id){
- let o=data[type].find(x=>x.id==id);
- if(!o)return;
- for(let k in o){
-  if(k!="id"){
-   let v=prompt(k,o[k]);
-   if(v!==null)o[k]=v;
-  }
- }
- save();
+function add(t){
+let o={};
+for(let f of fields[t]){
+o[f]=prompt(f);
+if(o[f]===null)return;
+}
+d[t].push(o);save();
 }
 
-function del(type,id){
- if(confirm("এই তথ্যটি মুছে ফেলবেন?")){
-  data[type]=data[type].filter(x=>x.id!=id);
-  save();
- }
+function list(t){
+let e=document.getElementById(t+"List");
+if(!e)return;
+e.innerHTML=d[t].map(x=>
+`<div class="card">${Object.entries(x).map(a=>`<b>${a[0]}:</b> ${a[1]}<br>`).join("")}</div>`
+).join("");
 }
 
-function render(){
- let map={
- member:"members",income:"incomes",donation:"donations",
- expense:"expenses",payment:"payments",activity:"activities",
- document:"documents",social:"socials",note:"notes"
- };
- for(let type in map){
-  let box=document.getElementById(map[type]);
-  box.innerHTML="";
-  data[type].forEach(o=>{
-   let text="";
-   for(let k in o)if(k!="id")text+=`<p><b>${k}:</b> ${o[k]}</p>`;
-   box.innerHTML+=`
-   <div class="card">
-   ${text}
-   <div class="action">
-   <button class="edit" onclick="edit('${type}',${o.id})">✏️ Edit</button>
-   <button class="del" onclick="del('${type}',${o.id})">🗑️ Delete</button>
-   </div></div>`;
-  });
- }
-
- document.getElementById("totalIncome").innerText=
- data.income.reduce((s,x)=>s+(Number(x.amount)||0),0);
-
- document.getElementById("totalDonation").innerText=
- data.donation.reduce((s,x)=>s+(Number(x.amount)||0),0);
-
- document.getElementById("totalExpense").innerText=
- data.expense.reduce((s,x)=>s+(Number(x.amount)||0),0);
+function incomeShow(){
+let m=document.getElementById("month").value;
+let a=d.income.filter(x=>x["কোন মাসের"]==m);
+document.getElementById("incomeList").innerHTML=a.map(x=>
+`<tr><td>${x["নাম"]}</td><td>${x["তারিখ"]}</td><td>${x["কোন মাসের"]}</td><td>৳${x["টাকা"]}</td></tr>`
+).join("");
+document.getElementById("mt").innerText=a.reduce((s,x)=>s+(+x["টাকা"]||0),0);
 }
 
-render();
+function showAll(){
+["member","donation","expense","payment","activity","document","social","note"].forEach(list);
+incomeShow();
+ti.innerText=d.income.reduce((s,x)=>s+(+x["টাকা"]||0),0);
+td.innerText=d.donation.reduce((s,x)=>s+(+x["টাকা"]||0),0);
+te.innerText=d.expense.reduce((s,x)=>s+(+x["টাকা"]||0),0);
+}
+showAll();
 </script>
 
 </body>
