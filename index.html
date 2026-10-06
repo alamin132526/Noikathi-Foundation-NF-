@@ -4,142 +4,448 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>নৈকাঠী ফাউন্ডেশন</title>
+
 <style>
-body{font-family:Arial;margin:0;background:#f2fff5}
-header{background:#087a3d;color:white;text-align:center;padding:15px}
-.logo{width:80px;height:80px;border-radius:50%;object-fit:cover}
-section{background:white;margin:10px;padding:12px;border-radius:10px}
-h2{color:#087a3d}input,textarea{width:90%;padding:7px;margin:3px}
-button{background:#087a3d;color:white;border:0;padding:7px;border-radius:5px;margin:3px}
-.item{border-bottom:1px solid #ddd;padding:7px}
-nav{text-align:center;padding:8px;background:white}
-nav a{color:#087a3d;margin:4px;text-decoration:none}
+*{box-sizing:border-box}
+body{margin:0;background:#f2faf4;font-family:Arial;color:#222}
+header{background:#087a3d;color:#fff;text-align:center;padding:18px}
+header h1{margin:5px}
+header p{margin:5px}
+.logo{width:75px;height:75px;border-radius:50%;object-fit:cover;background:#fff}
+nav{display:flex;overflow:auto;gap:5px;padding:8px;background:#fff;position:sticky;top:0;z-index:5}
+nav button{white-space:nowrap}
+section{background:#fff;margin:10px;padding:15px;border-radius:12px;box-shadow:0 2px 7px #ccc}
+h2{color:#087a3d}
+input,textarea,select{width:100%;padding:10px;margin:4px 0;border:1px solid #ccc;border-radius:7px}
+button{border:0;padding:9px 13px;border-radius:7px;background:#087a3d;color:white;margin:3px}
+.red{background:#d62828}
+.blue{background:#1769aa}
+.item{padding:10px 2px;border-bottom:1px solid #ddd;line-height:1.7}
+.admin{display:none}
+#login{max-width:400px;margin:20px auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px;border:1px solid #ddd}
+th{background:#087a3d;color:#fff}
 </style>
 </head>
+
 <body>
 
 <header>
-<img id="logo" class="logo" src="" style="display:none">
-<h1>🌿 নৈকাঠী ফাউন্ডেশন</h1>
+<img id="logo" class="logo" style="display:none">
+<h1 id="title">🌿 নৈকাঠী ফাউন্ডেশন</h1>
 <p id="desc">মানবতার সেবায় একসাথে</p>
-<input id="newDesc" placeholder="আপনার Description লিখুন">
-<button onclick="setDesc()">Description পরিবর্তন</button>
-<br>
-<input type="file" accept="image/*" onchange="setLogo(this)">
+
+<button id="loginBtn" onclick="loginBox()">🔐 Admin Login</button>
+<button id="logoutBtn" class="admin" onclick="logout()">Logout</button>
 </header>
 
+<div id="login" style="display:none">
+<section>
+<h2>🔐 Admin Login</h2>
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<button class="red" onclick="closeLogin()">বন্ধ</button>
+<p id="msg"></p>
+</section>
+</div>
+
 <nav>
-<a href="#member">সদস্য</a>
-<a href="#income">আয়</a>
-<a href="#donation">দান</a>
-<a href="#expense">ব্যয়</a>
-<a href="#payment">পেমেন্ট</a>
-<a href="#social">গ্রুপ</a>
-<a href="#activity">কার্যক্রম</a>
+<button onclick="go('members')">👥 সদস্য</button>
+<button onclick="go('income')">💰 আয়</button>
+<button onclick="go('donation')">🎁 দান</button>
+<button onclick="go('expense')">💸 ব্যয়</button>
+<button onclick="go('payment')">💳 টাকা দেওয়ার মাধ্যম</button>
+<button onclick="go('social')">🔗 Link</button>
+<button onclick="go('activity')">🤝 কার্যক্রম</button>
+<button onclick="go('settings')">⚙️ সেটিংস</button>
 </nav>
 
-<section id="member">
+<!-- সদস্য -->
+<section id="members">
 <h2>👥 সদস্য তালিকা</h2>
-<input id="search" placeholder="সিরিয়াল নম্বর দিয়ে সার্চ">
-<button onclick="searchMember()">🔎 Search</button>
-<div id="result"></div>
-<hr>
+
+<input id="search" placeholder="সিরিয়াল নম্বর দিয়ে Search করুন"
+oninput="searchMember()">
+
+<div id="searchResult"></div>
+
+<div class="admin">
 <input id="m0" placeholder="সিরিয়াল নম্বর">
 <input id="m1" placeholder="নাম">
-<input id="m2" placeholder="মোবাইল">
+<input id="m2" placeholder="মোবাইল নাম্বার">
 <input id="m3" placeholder="ব্লাড গ্রুপ">
-<input id="m4" placeholder="মাসিক ধার্য">
-<button onclick="addMember()">+ Add করুন</button>
-<div id="memberL"></div>
+<input id="m4" type="number" placeholder="মাসিক ধার্য">
+<button onclick="addMember()">➕ Add করুন</button>
+</div>
+
+<div id="memberList"></div>
+</section>
+
+<!-- আয় -->
+<section id="income">
+<h2>💰 মাসিক আয়</h2>
+
+<div class="admin">
+<input id="in0" placeholder="নাম">
+<input id="in1" type="date">
+<input id="in2" type="number" placeholder="টাকার পরিমাণ">
+<button onclick="add('income')">➕ Add করুন</button>
+</div>
+
+<div id="incomeList"></div>
+</section>
+
+<!-- দান -->
+<section id="donation">
+<h2>🎁 এককালীন দান</h2>
+
+<div class="admin">
+<input id="dn0" placeholder="দাতার নাম">
+<input id="dn1" type="date">
+<input id="dn2" type="number" placeholder="টাকার পরিমাণ">
+<button onclick="add('donation')">➕ Add করুন</button>
+</div>
+
+<div id="donationList"></div>
+</section>
+
+<!-- ব্যয় -->
+<section id="expense">
+<h2>💸 ব্যয়</h2>
+
+<div class="admin">
+<input id="ex0" placeholder="ব্যয়ের বিবরণ">
+<input id="ex1" type="date">
+<input id="ex2" type="number" placeholder="টাকার পরিমাণ">
+<button onclick="add('expense')">➕ Add করুন</button>
+</div>
+
+<div id="expenseList"></div>
+</section>
+
+<!-- টাকা দেওয়ার মাধ্যম -->
+<section id="payment">
+<h2>💳 টাকা দেওয়ার মাধ্যম</h2>
+
+<div class="admin">
+<select id="py0">
+<option>বিকাশ</option>
+<option>নগদ</option>
+<option>ব্যাংক</option>
+</select>
+<input id="py1" placeholder="নাম / ব্যাংকের নাম">
+<input id="py2" placeholder="নম্বর / অ্যাকাউন্ট নম্বর">
+<input id="py3" placeholder="শাখা">
+<button onclick="add('payment')">➕ Add করুন</button>
+</div>
+
+<div id="paymentList"></div>
+</section>
+
+<!-- Facebook Messenger -->
+<section id="social">
+<h2>🔗 Facebook & Messenger</h2>
+
+<div class="admin">
+<select id="so0">
+<option>Facebook Group</option>
+<option>Messenger Group</option>
+</select>
+<input id="so1" placeholder="Link">
+<button onclick="add('social')">➕ Add করুন</button>
+</div>
+
+<div id="socialList"></div>
+</section>
+
+<!-- কার্যক্রম -->
+<section id="activity">
+<h2>🤝 কার্যক্রম</h2>
+
+<div class="admin">
+<input id="ac0" placeholder="কার্যক্রমের নাম">
+<textarea id="ac1" placeholder="কার্যক্রমের বিস্তারিত"></textarea>
+<button onclick="add('activity')">➕ Add করুন</button>
+</div>
+
+<div id="activityList"></div>
+</section>
+
+<!-- সেটিংস -->
+<section id="settings">
+<h2>⚙️ ফাউন্ডেশন সেটিংস</h2>
+
+<div class="admin">
+<input id="st0" placeholder="ফাউন্ডেশনের নাম">
+<textarea id="st1" placeholder="ফাউন্ডেশনের বর্ণনা"></textarea>
+<input id="st2" placeholder="Logo-এর ছবি URL">
+<button onclick="saveSettings()">💾 Save করুন</button>
+</div>
+
+<p>নাম, বর্ণনা ও Logo পরিবর্তন করার ব্যবস্থা এখানে থাকবে।</p>
 </section>
 
 <script>
-let D=JSON.parse(localStorage.getItem("NF")||"{}");
 
-function add(t,n){
-function addMember(){
-let r=["m0","m1","m2","m3","m4"].map(x=>document.getElementById(x).value);
-if(!r[0]||!r[1]){alert("সিরিয়াল ও নাম দিন");return}
-D.member=D.member||[];
-D.member.push(r);
-save();show();
-}
+let admin=false;
 
-function save(){localStorage.setItem("NF",JSON.stringify(D))}
-function show(){
- let x=D.member||[];
- memberL.innerHTML=x.map((r,i)=>`<div class=item>
- সিরিয়াল: ${r[0]} | ${r[1]} | ${r[2]} | ${r[3]} | ৳${r[4]}
- <button onclick="del('member',${i})">মুছুন</button></div>`).join("");
-}
-function del(t,i){D[t].splice(i,1);save();show()}
-
-function searchMember(){
- let s=search.value,r=(D.member||[]).find(x=>x[0]==s);
- result.innerHTML=r?`<div class=item>
-<b>সিরিয়াল:</b> ${r[0]}<br>
-<b>নাম:</b> ${r[1]}<br>
-<b>মোবাইল:</b> ${r[2]}<br>
-<b>ব্লাড:</b> ${r[3]}<br>
-<b>মাসিক:</b> ৳${r[4]}</div>`:"কোনো সদস্য পাওয়া যায়নি";
-}
-
-function setDesc(){
- desc.innerText=newDesc.value||"মানবতার সেবায় একসাথে";
- localStorage.setItem("desc",desc.innerText);
-}
-
-function setLogo(x){
- let r=new FileReader();
- r.onload=()=>{logo.src=r.result;logo.style.display="inline-block";
- localStorage.setItem("logo",r.result)};
- r.readAsDataURL(x.files[0]);
-}
-
-desc.innerText=localStorage.getItem("desc")||"মানবতার সেবায় একসাথে";
-let L=localStorage.getItem("logo");
-if(L){logo.src=L;logo.style.display="inline-block"}
-show();
-</script>
-
-<div id="other"></div>
-
-<script>
-let S=[
-["income","💰 মাসিক আয়","নাম,তারিখ,টাকার পরিমাণ"],
-["donation","🎁 এককালীন দান","দাতার নাম,তারিখ,টাকার পরিমাণ"],
-["expense","💸 ব্যয়","বিবরণ,তারিখ,টাকার পরিমাণ"],
-["bKash","📱 বিকাশ","বিকাশ নম্বর / তথ্য"],
-["Nagad","📱 নগদ","নগদ নম্বর / তথ্য"],
-["Bank","🏦 ব্যাংক","ব্যাংকের নাম,অ্যাকাউন্ট নম্বর,শাখা"],
-["Facebook","🔵 Facebook Group","Facebook Group Link"],
-["Messenger","💬 Messenger Group","Messenger Group Link"],
-["activity","🤝 কার্যক্রম","কার্যক্রমের নাম,বিস্তারিত"]
+/* ৩ জন Admin */
+const admins=[
+ {email:"admin1@gmail.com",pass:"123456"},
+ {email:"admin2@gmail.com",pass:"123456"},
+ {email:"admin3@gmail.com",pass:"123456"}
 ];
 
-S.forEach(x=>{
-let[id,t,f]=x;
-other.innerHTML+=`<section id="${id}"><h2>${t}</h2>
-${f.split(",").map((a,i)=>`<input id="${id}${i}" placeholder="${a}">`).join("")}
-<button onclick="add2('${id}',${f.split(",").length})">+ Add করুন</button>
-<div id="${id}L"></div></section>`;
-});
+/* ডাটা */
+let D=JSON.parse(localStorage.getItem("NAIKATHI_DATA")||"{}");
 
-function add2(t,n){
-D[t]=D[t]||[];
-D[t].push([...Array(n)].map((_,i)=>document.getElementById(t+i).value));
-save();show2();
+function save(){
+ localStorage.setItem("NAIKATHI_DATA",JSON.stringify(D));
+ show();
 }
-function show2(){
-S.forEach(x=>{
-let[id]=x,L=document.getElementById(id+"L");
-if(L)L.innerHTML=(D[id]||[]).map((r,i)=>
-`<div class=item>${r.join(" | ")}
-<button onclick="del2('${id}',${i})">মুছুন</button></div>`).join("");
-});
+
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:"smooth"});
 }
-function del2(t,i){D[t].splice(i,1);save();show2()}
-show2();
+
+/* Login */
+function loginBox(){
+ document.getElementById("login").style.display="block";
+}
+
+function closeLogin(){
+ document.getElementById("login").style.display="none";
+}
+
+function login(){
+
+ let e=document.getElementById("email").value;
+ let p=document.getElementById("pass").value;
+
+ let ok=admins.some(x=>x.email==e&&x.pass==p);
+
+ if(ok){
+  admin=true;
+  document.querySelectorAll(".admin").forEach(x=>x.style.display="block");
+  document.getElementById("loginBtn").style.display="none";
+  document.getElementById("logoutBtn").style.display="inline-block";
+  document.getElementById("login").style.display="none";
+  show();
+ }else{
+  document.getElementById("msg").innerText="Email অথবা Password ভুল";
+ }
+}
+
+function logout(){
+ admin=false;
+ document.querySelectorAll(".admin").forEach(x=>x.style.display="none");
+ document.getElementById("loginBtn").style.display="inline-block";
+ document.getElementById("logoutBtn").style.display="none";
+ show();
+}
+
+/* সদস্য Add */
+function addMember(){
+
+ if(!admin)return alert("শুধু Admin Add করতে পারবেন");
+
+ let r=[
+  m0.value,m1.value,m2.value,m3.value,m4.value
+ ];
+
+ if(!r[0]||!r[1])
+ return alert("সিরিয়াল ও নাম দিন");
+
+ D.members=D.members||[];
+ D.members.push(r);
+
+ m0.value=m1.value=m2.value=m3.value=m4.value="";
+
+ save();
+}
+
+/* অন্যান্য Add */
+function add(type){
+
+ if(!admin)return alert("শুধু Admin Add করতে পারবেন");
+
+ let ids={
+ income:["in0","in1","in2"],
+ donation:["dn0","dn1","dn2"],
+ expense:["ex0","ex1","ex2"],
+ payment:["py0","py1","py2","py3"],
+ social:["so0","so1"],
+ activity:["ac0","ac1"]
+ };
+
+ D[type]=D[type]||[];
+
+ D[type].push(
+  ids[type].map(id=>document.getElementById(id).value)
+ );
+
+ ids[type].forEach(id=>document.getElementById(id).value="");
+
+ save();
+}
+
+/* Delete */
+function del(type,i){
+
+ if(!admin)return alert("শুধু Admin Delete করতে পারবেন");
+
+ D[type].splice(i,1);
+ save();
+}
+
+/* Edit সদস্য */
+function editMember(i){
+
+ if(!admin)return;
+
+ let r=D.members[i];
+
+ m0.value=r[0];
+ m1.value=r[1];
+ m2.value=r[2];
+ m3.value=r[3];
+ m4.value=r[4];
+
+ D.members.splice(i,1);
+ save();
+
+ go("members");
+}
+
+/* সব দেখানো */
+function show(){
+
+ showMembers();
+
+ showList("income");
+ showList("donation");
+ showList("expense");
+ showList("payment");
+ showList("social");
+ showList("activity");
+
+ loadSettings();
+}
+
+/* সদস্য দেখানো */
+function showMembers(){
+
+ let a=D.members||[];
+ let h="";
+
+ a.forEach((r,i)=>{
+
+ h+=`
+ <div class="item">
+ <b>${r[0]}. ${r[1]}</b><br>
+ 📞 ${r[2]}<br>
+ 🩸 ${r[3]}<br>
+ 💰 মাসিক ধার্য: ${r[4]} টাকা
+
+ ${admin?`
+ <br>
+ <button onclick="editMember(${i})">✏️ Edit</button>
+ <button class="red" onclick="del('members',${i})">🗑️ Delete</button>
+ `:""}
+ </div>`;
+ });
+
+ document.getElementById("memberList").innerHTML=
+ h||"এখনো কোনো সদস্য যোগ করা হয়নি।";
+}
+
+/* অন্যান্য তালিকা */
+function showList(type){
+
+ let a=D[type]||[];
+ let h="";
+
+ a.forEach((r,i)=>{
+
+ let text=r.join(" | ");
+
+ if(type=="social"){
+  text=`<b>${r[0]}</b><br>
+  <a href="${r[1]}" target="_blank">🔗 Link খুলুন</a>`;
+ }
+
+ h+=`
+ <div class="item">
+ ${text}
+ ${admin?
+ `<br><button class="red"
+ onclick="del('${type}',${i})">🗑️ Delete</button>`:""}
+ </div>`;
+ });
+
+ document.getElementById(type+"List").innerHTML=
+ h||"এখনো কোনো তথ্য যোগ করা হয়নি।";
+}
+
+/* সদস্য Search */
+function searchMember(){
+
+ let s=document.getElementById("search").value;
+ let a=D.members||[];
+
+ if(!s){
+  document.getElementById("searchResult").innerHTML="";
+  return;
+ }
+
+ let r=a.find(x=>String(x[0])==String(s));
+
+ document.getElementById("searchResult").innerHTML=
+ r?
+ `<section>
+ <b>👤 ${r[1]}</b><br>
+ 📞 ${r[2]}<br>
+ 🩸 ${r[3]}<br>
+ 💰 ${r[4]} টাকা
+ </section>`
+ :"❌ সদস্য পাওয়া যায়নি";
+}
+
+/* Settings */
+function saveSettings(){
+
+ if(!admin)return alert("শুধু Admin পরিবর্তন করতে পারবেন");
+
+ let s={
+  name:st0.value,
+  desc:st1.value,
+  logo:st2.value
+ };
+
+ D.settings=s;
+ save();
+ alert("সফলভাবে Save হয়েছে");
+}
+
+function loadSettings(){
+
+ let s=D.settings;
+ if(!s)return;
+
+ if(s.name)document.getElementById("title").innerText=s.name;
+ if(s.desc)document.getElementById("desc").innerText=s.desc;
+
+ if(s.logo){
+  let l=document.getElementById("logo");
+  l.src=s.logo;
+  l.style.display="block";
+ }
+}
+
+show();
+
 </script>
 
 </body>
